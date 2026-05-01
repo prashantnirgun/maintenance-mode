@@ -1,0 +1,17 @@
+{
+  "pageType": "Timer",
+  "template": "DarkTech",
+  "animationMode": "with-animation",
+  "pageTitle": "Business Plus Plus",
+  "companyName": "The Software Source",
+  "contactEmail": "info@tss.net.in",
+  "companyNameColor": "#2563eb",
+  "companyNameFontSize": "28px",
+  "companyNameFontWeight": "700",
+  "companyNameLetterSpacing": "0.02em",
+  "title": "We are building something great",
+  "subtitle": "Our new website is under construction. Check back soon!",
+  "ctaText": "Notify Me",
+  "countdownDate": "2026-05-10T17:02",
+  "maintenanceMessage": "We are currently undergoing scheduled maintenance."
+}
