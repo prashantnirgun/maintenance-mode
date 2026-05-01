@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import type { AppConfig } from '../../types'
 import CountdownTimer from '@/components/CountdownTimer.vue'
+import SplitFlapDigit from '@/components/SplitFlapDigit.vue'
 import TechCompanyScene from '@/components/animations/TechCompanyScene.vue'
 
 const props = defineProps<{
@@ -61,21 +62,49 @@ const formattedDate = computed(() => {
         <CountdownTimer :target-date="config.countdownDate">
           <template #default="{ time, isComplete }">
             <div v-if="!isComplete" class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-              <div class="rounded-2xl border border-slate-700 bg-slate-900/80 py-4">
-                <div class="text-3xl md:text-4xl font-bold text-cyan-300">{{ time.days }}</div>
-                <div class="text-xs tracking-[0.16em] text-slate-400 uppercase">Days</div>
+              <div class="rounded-2xl border border-slate-700 bg-slate-900/80 min-h-[8rem] md:min-h-[8.75rem] px-2 py-3 flex flex-col items-center justify-center gap-2">
+                <div class="flex items-center justify-center gap-1">
+                  <SplitFlapDigit
+                    v-for="(digit, idx) in time.days.split('')"
+                    :key="`days-${idx}`"
+                    :digit="digit"
+                    size="lg"
+                  />
+                </div>
+                <div class="text-xs leading-none tracking-[0.16em] text-slate-400 uppercase">Days</div>
               </div>
-              <div class="rounded-2xl border border-slate-700 bg-slate-900/80 py-4">
-                <div class="text-3xl md:text-4xl font-bold text-cyan-300">{{ time.hours }}</div>
-                <div class="text-xs tracking-[0.16em] text-slate-400 uppercase">Hours</div>
+              <div class="rounded-2xl border border-slate-700 bg-slate-900/80 min-h-[8rem] md:min-h-[8.75rem] px-2 py-3 flex flex-col items-center justify-center gap-2">
+                <div class="flex items-center justify-center gap-1">
+                  <SplitFlapDigit
+                    v-for="(digit, idx) in time.hours.split('')"
+                    :key="`hours-${idx}`"
+                    :digit="digit"
+                    size="lg"
+                  />
+                </div>
+                <div class="text-xs leading-none tracking-[0.16em] text-slate-400 uppercase">Hours</div>
               </div>
-              <div class="rounded-2xl border border-slate-700 bg-slate-900/80 py-4">
-                <div class="text-3xl md:text-4xl font-bold text-cyan-300">{{ time.minutes }}</div>
-                <div class="text-xs tracking-[0.16em] text-slate-400 uppercase">Minutes</div>
+              <div class="rounded-2xl border border-slate-700 bg-slate-900/80 min-h-[8rem] md:min-h-[8.75rem] px-2 py-3 flex flex-col items-center justify-center gap-2">
+                <div class="flex items-center justify-center gap-1">
+                  <SplitFlapDigit
+                    v-for="(digit, idx) in time.minutes.split('')"
+                    :key="`minutes-${idx}`"
+                    :digit="digit"
+                    size="lg"
+                  />
+                </div>
+                <div class="text-xs leading-none tracking-[0.16em] text-slate-400 uppercase">Minutes</div>
               </div>
-              <div class="rounded-2xl border border-slate-700 bg-slate-900/80 py-4">
-                <div class="text-3xl md:text-4xl font-bold text-cyan-300">{{ time.seconds }}</div>
-                <div class="text-xs tracking-[0.16em] text-slate-400 uppercase">Seconds</div>
+              <div class="rounded-2xl border border-slate-700 bg-slate-900/80 min-h-[8rem] md:min-h-[8.75rem] px-2 py-3 flex flex-col items-center justify-center gap-2">
+                <div class="flex items-center justify-center gap-1">
+                  <SplitFlapDigit
+                    v-for="(digit, idx) in time.seconds.split('')"
+                    :key="`seconds-${idx}`"
+                    :digit="digit"
+                    size="lg"
+                  />
+                </div>
+                <div class="text-xs leading-none tracking-[0.16em] text-slate-400 uppercase">Seconds</div>
               </div>
             </div>
             <div v-else class="text-2xl md:text-3xl font-semibold text-emerald-300">

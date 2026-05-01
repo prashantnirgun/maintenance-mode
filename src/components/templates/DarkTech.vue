@@ -2,13 +2,14 @@
 import { computed } from 'vue'
 import type { AppConfig } from '../../types'
 import CountdownTimer from '@/components/CountdownTimer.vue'
+import SplitFlapDigit from '@/components/SplitFlapDigit.vue'
 
 const props = defineProps<{
   config: AppConfig
 }>()
 
-const isLaunchingSoon = computed(() => props.config.pageType === 'Launching Soon')
 const isMaintenance = computed(() => props.config.pageType === 'Maintenance')
+const showCounter = computed(() => !isMaintenance.value && Boolean(props.config.countdownDate))
 const companyNameStyle = computed(() => ({
   color: props.config.companyNameColor || '#22d3ee',
   fontSize: props.config.companyNameFontSize || '28px',
@@ -51,11 +52,48 @@ const companyNameStyle = computed(() => ({
         > {{ config.subtitle }} <span class="animate-pulse">_</span>
       </p>
 
-      <CountdownTimer v-if="isLaunchingSoon" :target-date="config.countdownDate">
+      <CountdownTimer v-if="showCounter" :target-date="config.countdownDate">
         <template #default="{ time, isComplete }">
           <div class="mb-12">
-            <div class="text-5xl md:text-7xl font-light tracking-[0.1em] text-cyan-300 drop-shadow-[0_0_20px_rgba(34,211,238,0.4)]">
-              {{ isComplete ? 'LAUNCHED' : `${time.days}:${time.hours}:${time.minutes}:${time.seconds}` }}
+            <div v-if="isComplete" class="text-5xl md:text-7xl font-light tracking-[0.1em] text-cyan-300 drop-shadow-[0_0_20px_rgba(34,211,238,0.4)]">
+              LAUNCHED
+            </div>
+            <div v-else class="flex items-center justify-center gap-3 md:gap-4 text-cyan-300">
+              <div class="flex items-center gap-1">
+                <SplitFlapDigit
+                  v-for="(digit, idx) in time.days.split('')"
+                  :key="`days-${idx}`"
+                  :digit="digit"
+                  size="lg"
+                />
+              </div>
+              <span class="text-3xl md:text-4xl text-cyan-700">:</span>
+              <div class="flex items-center gap-1">
+                <SplitFlapDigit
+                  v-for="(digit, idx) in time.hours.split('')"
+                  :key="`hours-${idx}`"
+                  :digit="digit"
+                  size="lg"
+                />
+              </div>
+              <span class="text-3xl md:text-4xl text-cyan-700">:</span>
+              <div class="flex items-center gap-1">
+                <SplitFlapDigit
+                  v-for="(digit, idx) in time.minutes.split('')"
+                  :key="`minutes-${idx}`"
+                  :digit="digit"
+                  size="lg"
+                />
+              </div>
+              <span class="text-3xl md:text-4xl text-cyan-700">:</span>
+              <div class="flex items-center gap-1">
+                <SplitFlapDigit
+                  v-for="(digit, idx) in time.seconds.split('')"
+                  :key="`seconds-${idx}`"
+                  :digit="digit"
+                  size="lg"
+                />
+              </div>
             </div>
             <div class="text-xs text-slate-500 tracking-[0.3em] mt-4 uppercase">DD:HH:MM:SS</div>
           </div>

@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import type { AppConfig } from '../../types'
 import { Button } from '@/components/ui/button'
 import CountdownTimer from '@/components/CountdownTimer.vue'
+import SplitFlapDigit from '@/components/SplitFlapDigit.vue'
 
 const props = defineProps<{
   config: AppConfig
@@ -10,6 +11,7 @@ const props = defineProps<{
 
 const isLaunchingSoon = computed(() => props.config.pageType === 'Launching Soon')
 const isMaintenance = computed(() => props.config.pageType === 'Maintenance')
+const showCounter = computed(() => !isMaintenance.value && Boolean(props.config.countdownDate))
 const companyNameStyle = computed(() => ({
   color: props.config.companyNameColor || '#7c3aed',
   fontSize: props.config.companyNameFontSize || '28px',
@@ -50,23 +52,51 @@ const companyNameStyle = computed(() => ({
           {{ config.subtitle }}
         </p>
 
-        <CountdownTimer v-if="isLaunchingSoon" :target-date="config.countdownDate">
+        <CountdownTimer v-if="showCounter" :target-date="config.countdownDate">
           <template #default="{ time, isComplete }">
             <div class="grid grid-cols-4 gap-2 max-w-md mx-auto lg:mx-0">
               <div class="rounded-xl bg-white/60 dark:bg-black/30 backdrop-blur-sm px-3 py-3 text-center">
-                <div class="text-2xl font-black">{{ isComplete ? '00' : time.days }}</div>
+                <div class="flex items-center justify-center gap-1">
+                  <SplitFlapDigit
+                    v-for="(digit, idx) in (isComplete ? '00' : time.days).split('')"
+                    :key="`days-${idx}`"
+                    :digit="digit"
+                    size="sm"
+                  />
+                </div>
                 <div class="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-300">Days</div>
               </div>
               <div class="rounded-xl bg-white/60 dark:bg-black/30 backdrop-blur-sm px-3 py-3 text-center">
-                <div class="text-2xl font-black">{{ isComplete ? '00' : time.hours }}</div>
+                <div class="flex items-center justify-center gap-1">
+                  <SplitFlapDigit
+                    v-for="(digit, idx) in (isComplete ? '00' : time.hours).split('')"
+                    :key="`hours-${idx}`"
+                    :digit="digit"
+                    size="sm"
+                  />
+                </div>
                 <div class="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-300">Hours</div>
               </div>
               <div class="rounded-xl bg-white/60 dark:bg-black/30 backdrop-blur-sm px-3 py-3 text-center">
-                <div class="text-2xl font-black">{{ isComplete ? '00' : time.minutes }}</div>
+                <div class="flex items-center justify-center gap-1">
+                  <SplitFlapDigit
+                    v-for="(digit, idx) in (isComplete ? '00' : time.minutes).split('')"
+                    :key="`minutes-${idx}`"
+                    :digit="digit"
+                    size="sm"
+                  />
+                </div>
                 <div class="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-300">Mins</div>
               </div>
               <div class="rounded-xl bg-white/60 dark:bg-black/30 backdrop-blur-sm px-3 py-3 text-center">
-                <div class="text-2xl font-black">{{ isComplete ? '00' : time.seconds }}</div>
+                <div class="flex items-center justify-center gap-1">
+                  <SplitFlapDigit
+                    v-for="(digit, idx) in (isComplete ? '00' : time.seconds).split('')"
+                    :key="`seconds-${idx}`"
+                    :digit="digit"
+                    size="sm"
+                  />
+                </div>
                 <div class="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-300">Secs</div>
               </div>
             </div>
