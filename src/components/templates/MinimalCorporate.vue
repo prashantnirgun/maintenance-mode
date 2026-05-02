@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { DotLottieVue } from '@lottiefiles/dotlottie-vue'
 import type { AppConfig } from '../../types'
 import { Button } from '@/components/ui/button'
+import { usePageRefresh } from '@/composables/usePageRefresh'
 import CountdownTimer from '@/components/CountdownTimer.vue'
 import SplitFlapDigit from '@/components/SplitFlapDigit.vue'
 
@@ -10,6 +11,8 @@ const props = defineProps<{
   config: AppConfig
   animated?: boolean
 }>()
+
+const { refreshPage } = usePageRefresh()
 
 const isMaintenance = computed(() => props.config.pageType === 'Maintenance')
 const showCounter = computed(() => !isMaintenance.value && Boolean(props.config.countdownDate))
@@ -136,6 +139,9 @@ const formattedDate = computed(() => {
       <div class="flex flex-col sm:flex-row gap-4 w-full justify-center max-w-md mx-auto">
         <Button v-if="config.ctaText" size="lg" class="w-full sm:w-auto h-12 px-8 rounded-full text-base">
           {{ config.ctaText }}
+        </Button>
+        <Button type="button" variant="outline" size="lg" class="w-full sm:w-auto h-12 px-8 rounded-full text-base" @click="refreshPage">
+          Refresh
         </Button>
       </div>
     </main>

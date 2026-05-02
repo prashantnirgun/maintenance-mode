@@ -1,0 +1,16 @@
+# Compose file format v2+ (no `version` key — it is ignored by modern Docker Compose).
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: maintenance-mode:latest
+    container_name: maintenance-mode-web
+    ports:
+      - "${HTTP_PORT:-8080}:80"
+    restart: unless-stopped
+    stop_grace_period: 30s
+    # Optional: persist public config (GET /api/config) without rebuilding the image
+    # volumes:
+    #   - ./config.json:/usr/share/nginx/html/config.json:ro

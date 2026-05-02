@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import type { AppConfig } from '../../types'
 import { Button } from '@/components/ui/button'
+import { usePageRefresh } from '@/composables/usePageRefresh'
 import CountdownTimer from '@/components/CountdownTimer.vue'
 import SplitFlapDigit from '@/components/SplitFlapDigit.vue'
 
@@ -12,6 +13,8 @@ const props = defineProps<{
 const isLaunchingSoon = computed(() => props.config.pageType === 'Launching Soon')
 const isMaintenance = computed(() => props.config.pageType === 'Maintenance')
 const showCounter = computed(() => !isMaintenance.value && Boolean(props.config.countdownDate))
+const { refreshPage } = usePageRefresh()
+
 const companyNameStyle = computed(() => ({
   color: props.config.companyNameColor || '#7c3aed',
   fontSize: props.config.companyNameFontSize || '28px',
@@ -110,6 +113,9 @@ const companyNameStyle = computed(() => ({
         <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
           <Button v-if="config.ctaText" size="lg" class="h-14 px-8 rounded-2xl text-lg shadow-xl shadow-purple-500/20 bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 border-0">
             {{ config.ctaText }}
+          </Button>
+          <Button type="button" variant="outline" size="lg" class="h-14 px-8 rounded-2xl text-lg border-2 border-slate-300 dark:border-slate-600 bg-white/70 dark:bg-slate-900/50 backdrop-blur-sm" @click="refreshPage">
+            Refresh
           </Button>
         </div>
       </div>

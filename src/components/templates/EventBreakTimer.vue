@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { AppConfig } from '../../types'
+import { Button } from '@/components/ui/button'
+import { usePageRefresh } from '@/composables/usePageRefresh'
 import CountdownTimer from '@/components/CountdownTimer.vue'
 import SplitFlapDigit from '@/components/SplitFlapDigit.vue'
 import TechCompanyScene from '@/components/animations/TechCompanyScene.vue'
@@ -9,6 +11,8 @@ const props = defineProps<{
   config: AppConfig
   animated?: boolean
 }>()
+
+const { refreshPage } = usePageRefresh()
 
 const companyNameStyle = computed(() => ({
   color: props.config.companyNameColor || '#2563eb',
@@ -116,6 +120,15 @@ const formattedDate = computed(() => {
         <p v-if="formattedDate" class="mt-6 text-sm text-slate-400">
           Live resumes at {{ formattedDate }}
         </p>
+
+        <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-stretch sm:items-center">
+          <Button v-if="config.ctaText" size="lg" class="rounded-full bg-cyan-500 text-slate-950 hover:bg-cyan-400 border-0">
+            {{ config.ctaText }}
+          </Button>
+          <Button type="button" variant="outline" size="lg" class="rounded-full border-cyan-500/50 text-cyan-200 hover:bg-cyan-500/10 hover:text-cyan-100" @click="refreshPage">
+            Refresh
+          </Button>
+        </div>
       </div>
     </main>
   </div>

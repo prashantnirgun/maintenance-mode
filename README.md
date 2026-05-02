@@ -96,6 +96,65 @@ npm run build
 npm run preview
 ```
 
+## Deployment with Docker
+
+The production image is **multi-stage**: Node builds the app; the runtime image is **nginx only** (no Node process). Static files live under `/usr/share/nginx/html`. SPA routing and caching are configured in `nginx/default.conf`.
+
+**Config in Docker:** `GET /api/config` is served from `config.json` next to the built assets (or `{}` if the file is missing). **`POST /api/config` is not available** in this static setup, so the in-browser **Save & Publish** flow from `npm run dev` does not persist inside the container. For production Docker, either mount a `config.json` you maintain on the host, bake config into the image after editing locally, or run a separate API if you need runtime writes.
+
+### Prerequisites
+
+- Docker Engine 24+ (or compatible)
+- Docker Compose v2 (`docker compose` command)
+
+### Using Docker Compose (typical on a VPS)
+
+From the repository root:
+
+```bash
+docker compose build
+docker compose up -d
+```
+
+By default the site is on **port 8080** (`http://<host>:8080/`, admin at `/admin`). Change the host port with `HTTP_PORT`:
+
+```bash
+HTTP_PORT=3000 docker compose up -d
+```
+
+To serve a fixed config without rebuilding, uncomment the `volumes` block in `docker-compose.yml` (or add your own) so the container reads a host file:
+
+```yaml
+volumes:
+  - ./config.json:/usr/share/nginx/html/config.json:ro
+```
+
+Create `config.json` on the host before the first start if you use a bind mount (you can start from `{}`).
+
+Useful commands:
+
+```bash
+docker compose logs -f web
+docker compose up -d --build
+docker compose build --no-cache && docker compose up -d
+docker compose down
+```
+
+### Using Docker only (no Compose)
+
+```bash
+docker build -t maintenance-mode:latest .
+docker run -d --name maintenance-mode-web -p 8080:80 --restart unless-stopped maintenance-mode:latest
+```
+
+Optional read-only config mount:
+
+```bash
+docker run -d --name maintenance-mode-web -p 8080:80 \
+  -v "$(pwd)/config.json:/usr/share/nginx/html/config.json:ro" \
+  --restart unless-stopped maintenance-mode:latest
+```
+
 ## Configuration Model
 
 The app uses a typed `AppConfig` object (`src/types/index.ts`) with fields including:
@@ -124,9 +183,10 @@ This design keeps deployment simple for static-style environments that can run a
 
 ## Deployment Notes
 
-- Ensure your deployment target can run the Vite server/plugin layer if you use built-in `config.json` save API
-- For larger teams or cloud-native setups, replace `vite-plugin-config-api.ts` with your own backend API
-- Keep `config.json` writable by the process user in environments where runtime edits are expected
+- **Docker (nginx static image):** see [Deployment with Docker](#deployment-with-docker). There is no runtime write API; use a mounted `config.json`, rebuild the image after local `npm run build`, or add your own backend.
+- **Node / Vite on a server:** ensure the process can run the dev or preview server with the Vite `config.json` plugin if you rely on `POST /api/config` from the admin UI.
+- For larger teams or cloud-native setups, replace `vite-plugin-config-api.ts` with your own backend API.
+- Keep `config.json` writable by the process user in environments where runtime edits from the app are expected.
 
 ## Roadmap
 

@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { AppConfig } from '../../types'
+import { usePageRefresh } from '@/composables/usePageRefresh'
 import CountdownTimer from '@/components/CountdownTimer.vue'
 import SplitFlapDigit from '@/components/SplitFlapDigit.vue'
 
 const props = defineProps<{
   config: AppConfig
 }>()
+
+const { refreshPage } = usePageRefresh()
 
 const isMaintenance = computed(() => props.config.pageType === 'Maintenance')
 const showCounter = computed(() => !isMaintenance.value && Boolean(props.config.countdownDate))
@@ -105,10 +108,15 @@ const companyNameStyle = computed(() => ({
         <p class="text-amber-400 font-medium relative z-10">{{ config.maintenanceMessage }}</p>
       </div>
 
-      <button v-if="config.ctaText" class="group relative px-8 py-4 bg-transparent border border-cyan-500 text-cyan-400 font-bold uppercase tracking-widest overflow-hidden transition-all hover:text-slate-950">
-        <div class="absolute inset-0 bg-cyan-500 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out -z-10"></div>
-        {{ config.ctaText }}
-      </button>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center w-full">
+        <button v-if="config.ctaText" type="button" class="group relative px-8 py-4 bg-transparent border border-cyan-500 text-cyan-400 font-bold uppercase tracking-widest overflow-hidden transition-all hover:text-slate-950">
+          <div class="absolute inset-0 bg-cyan-500 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out -z-10"></div>
+          {{ config.ctaText }}
+        </button>
+        <button type="button" class="px-8 py-4 bg-transparent border border-slate-600 text-slate-300 font-bold uppercase tracking-widest transition-all hover:border-cyan-500/60 hover:text-cyan-300" @click="refreshPage">
+          Refresh
+        </button>
+      </div>
 
     </main>
 
