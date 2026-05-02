@@ -138,6 +138,10 @@ docker compose logs -f web
 docker compose up -d --build
 docker compose build --no-cache && docker compose up -d
 docker compose down
+
+#incase want to add it to existing network
+docker network ls
+docker network connect maintenance-mode_default npm
 ```
 
 ### Using Docker only (no Compose)
